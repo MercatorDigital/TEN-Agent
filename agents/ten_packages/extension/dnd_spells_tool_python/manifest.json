@@ -1,6 +1,6 @@
 {
   "type": "extension",
-  "name": "weatherapi_tool_python",
+  "name": "dnd_spells_tool_python",
   "version": "0.1.0",
   "dependencies": [
     {
