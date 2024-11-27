@@ -26,13 +26,26 @@ TOOL_REGISTER_PROPERTY_PARAMETERS = "parameters"
 TOOL_CALLBACK = "callback"
 
 TOOL_NAME = "run_example"
-TOOL_DESCRIPTION = "Use this function to order a sandwich "
+TOOL_DESCRIPTION = "When the user mentions DND, use this tool to get the name of the spell specified by the user."
 TOOL_PARAMETERS = {
         "type": "object",
         "properties": {
             "filling": {
                 "type": "string",
-                "description": "sandwich filling"
+                "description": "the spell name specified by the user"
+            }
+        },
+        "required": ["filling"],
+    }
+
+TOOL_NAME2 = "run_example2"
+TOOL_DESCRIPTION2 = "When the user mentions DND, use this tool to get the name of the class specified by the user."
+TOOL_PARAMETERS2 = {
+        "type": "object",
+        "properties": {
+            "filling": {
+                "type": "string",
+                "description": "the class specified by the user"
             }
         },
         "required": ["filling"],
@@ -54,6 +67,12 @@ class EXAMPLEToolExtension(Extension):
                 TOOL_REGISTER_PROPERTY_DESCRIPTON: TOOL_DESCRIPTION,
                 TOOL_REGISTER_PROPERTY_PARAMETERS: TOOL_PARAMETERS,
                 TOOL_CALLBACK: self._run_example
+            },
+            TOOL_NAME2: {
+                TOOL_REGISTER_PROPERTY_NAME: TOOL_NAME2,
+                TOOL_REGISTER_PROPERTY_DESCRIPTON: TOOL_DESCRIPTION2,
+                TOOL_REGISTER_PROPERTY_PARAMETERS: TOOL_PARAMETERS2,
+                TOOL_CALLBACK: self._run_example2
             }
         }
 
@@ -126,15 +145,35 @@ class EXAMPLEToolExtension(Extension):
         pass
     
     def _run_example(self,  args:dict) -> Any:
-        logger.info(f"TOOL EXAMPLE filling {args}")   
-        filling = args["filling"] 
-        if filling == "chicken":
-            return "sorry out of chicken, please choose something dfferent"
+        logger.info("USING DND THING")
+        if "filling" not in args:
+            raise Exception("Failed to get property")
+        
+        spell: str = args["filling"]
+        logger.info(f"EEEEEEEEEEEEEE https://www.dnd5eapi.co/api/spells/{spell.lower()}")
+        url = f"https://www.dnd5eapi.co/api/spells/{spell.lower()}"
+        response = requests.get(url)
 
-        return "OK it will be available for collection in 15 mins"
+        logger.info(f"FFFFFF {response}")
+
+        result = response.json()
+        return result
 
         
+    def _run_example2(self,  args:dict) -> Any:
+        logger.info("USING DND THING 2")
+        if "filling" not in args:
+            raise Exception("Failed to get property")
+        
+        spell: str = args["filling"]
+        logger.info(f"ZZZZZZZZ https://www.dnd5eapi.co/api/classes/{spell.lower()}")
+        url = f"https://www.dnd5eapi.co/api/classes/{spell.lower()}"
+        response = requests.get(url)
 
+        logger.info(f"XXXXXXXX {response}")
+
+        result = response.json()
+        return result
         
 
         
